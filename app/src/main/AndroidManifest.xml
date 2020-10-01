@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sample.spi">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <service
+            android:name=".SecuritySPIService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="co.poynt.vendor.services.v1.IPoyntPaymentSecuritySPI" />
+            </intent-filter>
+            <meta-data
+                android:name="co.poynt.os.service.capability"
+                android:resource="@xml/security_spi_capabilities" />
+        </service>
+        <service
+            android:name=".PaymentSPIService"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="co.poynt.vendor.services.v1.IPoyntPaymentSPI" />
+            </intent-filter>
+            <meta-data
+                android:name="co.poynt.os.service.capability"
+                android:resource="@xml/spi_capabilities" />
+        </service>
+    </application>
+
+</manifest>

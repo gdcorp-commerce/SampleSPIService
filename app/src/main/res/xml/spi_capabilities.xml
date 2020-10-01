@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<capability>
+    <appid>com.sample.spi</appid>
+
+    <type>SPI_PROVIDER</type>
+
+    <!-- descriptive name of this capability -->
+    <provider>Sample Payment SPI</provider>>
+
+    <entry_method type="CARDREAD"></entry_method>
+
+    <version>1</version>
+
+    <!-- List of all device models supported for this SPI Provider -->
+    <!-- this should be the value as set in "ro.product.model" system property-->
+    <model>HW-MODEL</model>
+
+</capability>
