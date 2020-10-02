@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <service
             android:name=".SecuritySPIService"
             android:enabled="true"
@@ -16,6 +17,7 @@
             <intent-filter>
                 <action android:name="co.poynt.vendor.services.v1.IPoyntPaymentSecuritySPI" />
             </intent-filter>
+
             <meta-data
                 android:name="co.poynt.os.service.capability"
                 android:resource="@xml/security_spi_capabilities" />
@@ -23,14 +25,39 @@
         <service
             android:name=".PaymentSPIService"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="co.poynt.vendor.services.v1.IPoyntPaymentSPI" />
             </intent-filter>
+
             <meta-data
                 android:name="co.poynt.os.service.capability"
                 android:resource="@xml/spi_capabilities" />
         </service>
+        <receiver
+            android:name=".EmvConfigsUpdateReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="poynt.intent.action.EMV_CONFIGS_UPDATED" />
+                <action android:name="poynt.intent.action.TERMINAL_CONFIG_UPDATED" />
+                <action android:name="poynt.intent.action.AID_CONFIG_UPDATED" />
+                <action android:name="poynt.intent.action.EMV_CA_PUBLIC_KEY_UPDATED" />
+                <action android:name="poynt.intent.action.DELETE_ALL_CONFIG" />
+                <action android:name="poynt.intent.action.DESTROY_ALL_CONFIG" />
+                <action android:name="poynt.intent.action.DELETE_AID_CONFIG" />
+                <action android:name="poynt.intent.action.DELETE_ALL_AID_CONFIG" />
+                <action android:name="poynt.intent.action.DELETE_EMV_CA_PUBLIC_KEY" />
+                <action android:name="poynt.intent.action.DELETE_ALL_EMV_CA_PUBLIC_KEY" />
+                <action android:name="poynt.intent.action.ADD_REVOCATION_LIST_ENTRY" />
+                <action android:name="poynt.intent.action.DELETE_REVOCATION_LIST_ENTRY" />
+                <action android:name="poynt.intent.action.DELETE_ALL_REVOCATION_LIST_ENTRY" />
+                <action android:name="poynt.intent.action.ADD_EXCEPTION_LIST_ENTRY" />
+                <action android:name="poynt.intent.action.DELETE_EXCEPTION_LIST_ENTRY" />
+                <action android:name="poynt.intent.action.DELETE_ALL_EXCEPTION_LIST_ENTRY" />
+                <action android:name="poynt.intent.action.DELETE_AID_CONFIG_WITH_MATCHING_TLV" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
