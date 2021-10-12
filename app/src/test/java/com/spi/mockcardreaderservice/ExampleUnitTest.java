@@ -1,4 +1,4 @@
-package com.sample.spi;
+package com.spi.mockcardreaderservice;
 
 import org.junit.Test;
 

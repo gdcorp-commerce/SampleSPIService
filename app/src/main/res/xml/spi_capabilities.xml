@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <capability>
-    <appid>com.sample.spi</appid>
+    <appid>com.spi.mockcardreaderservice</appid>
 
     <type>SPI_PROVIDER</type>
 
@@ -13,6 +13,6 @@
 
     <!-- List of all device models supported for this SPI Provider -->
     <!-- this should be the value as set in "ro.product.model" system property-->
-    <model>HW-MODEL</model>
+    <model>POYNT_EMULATOR</model>
 
 </capability>

@@ -1,4 +1,4 @@
-package com.sample.spi;
+package com.spi.mockcardreaderservice;
 
 import android.content.Context;
 
@@ -21,6 +21,7 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.sample.spi", appContext.getPackageName());
+
+        assertEquals("com.spi.mockcardreaderservice", appContext.getPackageName());
     }
 }
