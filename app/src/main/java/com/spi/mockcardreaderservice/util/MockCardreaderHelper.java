@@ -108,13 +108,16 @@ public class MockCardreaderHelper {
             // Discover CONTACTLESS
             mockResponseData = findMockResponseData(DISCOVER_CONTACTLESS);
         } else {
-            Log.i(TAG, "Did not find a response data to mock for this amount ");
+            // Return some default response for amount range not implemented. Fix for DO-6440
+            Log.i(TAG, "Did not find a response data to mock for this amount " +
+                    "Defaulting to Discover Magstripe");
+            mockResponseData = findMockResponseData(DISCOVER_MAGSTRIPE);
         }
 
         return mockResponseData;
     }
 
-    private MockResponseData findMockResponseData(String scheme) {
+    public MockResponseData findMockResponseData(String scheme) {
         MockResponseData mockResponseData = null;
         for (MockResponseData data: responseDataList) {
             if(scheme.equals(data.getScheme())) {
@@ -130,5 +133,51 @@ public class MockCardreaderHelper {
         MockResponseData.ResponseData responseData = null;
 
         return responseData;
+    }
+
+    public static int getValueFromCardScheme(String scheme) {
+        int value = 00;
+        switch (scheme) {
+            case VISA_MAGSTRIPE:
+                value = 00;
+                break;
+            case VISA_CONTACT:
+                value = 05;
+                break;
+            case VISA_CONTACTLESS:
+                value = 10;
+                break;
+            case MASTERCARD_MAGSTRIPE:
+                value = 15;
+                break;
+            case MASTERCARD_CONTACT:
+                value = 20;
+                break;
+            case MASTERCARD_CONTACTLESS:
+                value = 25;
+                break;
+            case AMEX_MAGSTRIPE:
+                value = 30;
+                break;
+            case AMEX_CONTACT:
+                value = 35;
+                break;
+            case AMEX_CONTACTLESS:
+                value = 40;
+                break;
+            case DISCOVER_MAGSTRIPE:
+                value = 45;
+                break;
+            case DISCOVER_CONTACT:
+                value = 50;
+                break;
+            case DISCOVER_CONTACTLESS:
+                value = 55;
+                break;
+            default:
+                value = 00;
+                break;
+        }
+        return value;
     }
 }

@@ -24,9 +24,34 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
+    // Add signing configs to sign the app with keys by default, DO-6466
+    signingConfigs {
+        debug {
+            storeFile file("../keys/release.keystore")
+            storePassword "@emuThegreat@2021"
+            keyAlias "emu_release"
+            keyPassword "@emuThegreat@2021"
+        }
         release {
-            minifyEnabled false
+            storeFile file("../keys/release.keystore")
+            storePassword "@emuThegreat@2021"
+            keyAlias "emu_release"
+            keyPassword "@emuThegreat@2021"
+        }
+    }
+
+    buildTypes {
+        debug {
+            versionNameSuffix "-d"
+            signingConfig signingConfigs.debug
+            // minifyEnabled true
+            // shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            signingConfig signingConfigs.release
+            // minifyEnabled true
+            // shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

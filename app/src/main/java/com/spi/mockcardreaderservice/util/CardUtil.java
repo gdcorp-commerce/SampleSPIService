@@ -5,14 +5,74 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
+import java.util.List;
+
 import co.poynt.api.model.Card;
 import co.poynt.api.model.CardType;
 import co.poynt.api.model.FundingSource;
 import co.poynt.api.model.FundingSourceAccountType;
+import co.poynt.cardreader.CardInterfaceType;
+import co.poynt.os.model.ConnectionResult;
+import co.poynt.vendor.model.CardReaderRequest;
+import co.poynt.vendor.model.CardReaderEvent;
 //import co.poynt.os.common.R;
 
 public class CardUtil {
 
+    public static final String ENABLE_PLAYBACK = "enable_playback";
+
+    public static final String DISABLE_PLAYBACK = "disable_playback";
+    public static final String DISABLE_PLAYBACK_FOR_CURRENT_TXN = "disable_playback_for_current_txn";
+    public static final String PLAYBACK_CARD_TYPE = "playback_card_type";
+
+    public static class CardReaderUiEvent {
+        public static final String BASE = "poynt.intent.action.";
+        public static final String PRESENT_CARD = BASE+"PRESENT_CARD";
+        public static final String INSERT_CARD = BASE+ "INSERT_CARD";
+        public static final String SWIPE_CARD = BASE + "SWIPE_CARD";
+        public static final String INSERT_OR_SWIPE_CARD = BASE + "INSERT_OR_SWIPE_CARD";
+        public static final String CARD_FOUND = BASE + "CARD_FOUND";
+        public static final String CARD_READ_SUCCESSFULLY = BASE + "CARD_READ_SUCCESSFULLY";
+        public static final String CARD_REMOVED = BASE + "CARD_REMOVED";
+        public static final String CARD_NOT_REMOVED = BASE + "CARD_NOT_REMOVED";
+        public static final String SWIPE_CARD_FALLBACK = BASE + "SWIPE_CARD_FALLBACK";
+        public static final String PROCESSING = BASE + "PROCESSING";
+        public static final String PIN_ENTRY_REQUIRED = BASE + "PIN_ENTRY_REQUIRED";
+        public static final String PIN_DIGIT_ENTERED  = BASE + "PIN_DIGIT_ENTERED"; //(for each digit)
+        public static final String PIN_ENTERED = BASE + "PIN_ENTERED";
+        public static final String ONLINE_AUTHORIZATION = BASE + "ONLINE_AUTHORIZATION";
+        public static final String APPROVED = BASE + "APPROVED";
+        public static final String DECLINED = BASE + "DECLINED";
+        public static final String APPROVED_OR_APPROVED_WITH_SIGNATURE = BASE + "APPROVED or APPROVED WITH SIGNATURE";
+        public static final String PRESENT_CARD_AGAIN = BASE + "PRESENT_CARD_AGAIN";
+        public static final String PROCESSING_ERROR_SEE_PHONE = BASE + "PROCESSING_ERROR_SEE_PHONE";
+    }
+
+    public static CardReaderEvent getEvent(List<CardInterfaceType> interfaces) {
+        final boolean enableCT = interfaces.contains(CardInterfaceType.CT);
+        final boolean enableCL = interfaces.contains(CardInterfaceType.CL);
+        final boolean enableMSR = interfaces.contains(CardInterfaceType.MSR);
+
+        final CardReaderEvent event = new CardReaderEvent();
+        if(enableCT && enableCL && enableMSR){
+            event.setEvent(CardReaderUiEvent.PRESENT_CARD);
+        }else if(enableCT && (!enableCL) && (!enableMSR)){
+            event.setEvent(CardReaderUiEvent.INSERT_CARD);
+        }else if(enableMSR && (!enableCL) && (!enableCT)){
+            event.setEvent(CardReaderUiEvent.SWIPE_CARD);
+        }else if(enableMSR && (enableCT) && (!enableCL)){
+            event.setEvent(CardReaderUiEvent.INSERT_OR_SWIPE_CARD);
+        } else {
+            // default
+            event.setEvent(CardReaderUiEvent.PRESENT_CARD);
+        }
+
+        if(enableCT|enableCL|enableMSR){
+            return event;
+        }
+
+        return null;
+    }
 
    /* public static Drawable getCardLogo(Context context, CardType cardType, FundingSourceAccountType accountType) {
         return getCardLogo(context.getResources(), cardType, accountType);
