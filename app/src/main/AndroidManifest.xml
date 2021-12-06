@@ -1,7 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.spi.mockcardreaderservice">
 
     <protected-broadcast android:name="poynt.intent.action.CARD_REMOVED" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -10,7 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <service
+            android:name=".MockCardReaderIntentService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="action.emu" />
+            </intent-filter>
+        </service>
         <service
             android:name=".MockCardReaderService"
             android:enabled="true"
@@ -23,8 +33,6 @@
                 android:name="co.poynt.os.service.capability"
                 android:resource="@xml/spi_capabilities" />
         </service>
-
     </application>
-
 
 </manifest>

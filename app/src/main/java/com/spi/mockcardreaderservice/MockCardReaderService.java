@@ -1,22 +1,43 @@
 package com.spi.mockcardreaderservice;
 
+import static com.spi.mockcardreaderservice.util.CardUtil.DISABLE_PLAYBACK;
+import static com.spi.mockcardreaderservice.util.CardUtil.DISABLE_PLAYBACK_FOR_CURRENT_TXN;
+import static com.spi.mockcardreaderservice.util.CardUtil.ENABLE_PLAYBACK;
+import static com.spi.mockcardreaderservice.util.CardUtil.PLAYBACK_CARD_TYPE;
+
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.spi.mockcardreaderservice.builder.ApplicationListBuilder;
 import com.spi.mockcardreaderservice.builder.CardReaderResponseBuilder;
+import com.spi.mockcardreaderservice.util.CardUtil;
 import com.spi.mockcardreaderservice.util.MockCardreaderHelper;
 import com.spi.mockcardreaderservice.util.MockResponseData;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import co.poynt.cardreader.ApplicationItem;
+import co.poynt.cardreader.CardInterfaceType;
+import co.poynt.cardreader.CardScheme;
 import co.poynt.os.model.APDUData;
 import co.poynt.os.model.ConnectionOptions;
 import co.poynt.os.model.KernelType;
@@ -27,6 +48,7 @@ import co.poynt.os.services.v1.IPoyntDisconnectFromCardListener;
 import co.poynt.os.services.v1.IPoyntExchangeAPDUListListener;
 import co.poynt.os.services.v1.IPoyntKernelVersionListener;
 import co.poynt.os.util.ByteUtils;
+import co.poynt.vendor.model.CardReaderEvent;
 import co.poynt.vendor.model.CardReaderEventName;
 import co.poynt.vendor.model.CardReaderRequest;
 import co.poynt.vendor.model.CardReaderResponse;
@@ -54,6 +76,7 @@ public class MockCardReaderService extends Service {
     long transactionAmount;
 
     public MockCardReaderService() {
+
     }
 
     MockCardreaderHelper mockCardreaderHelper = null;
@@ -61,10 +84,14 @@ public class MockCardReaderService extends Service {
     MockResponseData mockResponseData = null;
     List<MockResponseData.ResponseData> responseDataList = null;
 
+    SharedPreferences mPrefs;
+
     @Override
     public IBinder onBind(Intent intent) {
         mockCardreaderHelper = new MockCardreaderHelper(getApplicationContext());
         mockResponseDataList = mockCardreaderHelper.loadResponseJsonFileFromAssets();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
         return mBinder;
     }
 
@@ -102,15 +129,26 @@ public class MockCardReaderService extends Service {
         @Override
         public void startTransaction(CardReaderRequest cardReaderRequest,
                                      IPoyntPaymentSPIListener iPoyntPaymentSPIListener) throws RemoteException {
-            // Sample MasterCard MSR
-            // data = "885638E88B0396A6000FCBBBEC3FE7F8DA700340A3C5CC4F714708E4EA9A104682A642D20E3FE8CC8AE
-            // 5DDC2B01F5B0330B83CB347279AD025187257285C124D98E6DDF87B5979B200CAF12E0D82E69ADE2DC41D73B8FA
-            // E7F3EE38960E6948F2EC94203EC65A105C124D98E6DDF87B5979B200CAF12E0D1F812B035413331F81020AFFFF11223
-            // 300246000131f810404303032391f810306353431333333";
-            //     returnResponse(CardReaderResponse.Status.SUCCESS,
-            //                   ByteUtils.hexStringToByteArray(data), iPoyntPaymentSPIListener);
+            // DO-6441 Enable/Disable playback mode check
+            if (checkDisablePlaybackForCurrentTransaction()) {
+                // Disable playback for this transaction only, by just returning the event and
+                // not playing back the responses
+                // Also enable the flag back here
+                resetDisablePlaybackForCurrentTransaction();
+                CardReaderEvent event = CardUtil.getEvent(cardReaderRequest.getCardInterfaceTypes());
+                iPoyntPaymentSPIListener.onEvent(event);
 
-            // Todo: Move everything here to a thread
+                // Don't do anything for current transaction
+                return;
+            }
+
+            if (!checkPlaybackEnabled()) {
+                // Disabled playback until it is enabled again
+                CardReaderEvent event = CardUtil.getEvent(cardReaderRequest.getCardInterfaceTypes());
+                iPoyntPaymentSPIListener.onEvent(event);
+
+                return;
+            }
 
             // Save transaction amount for later. Needed to update the mock data with this amount
             // before we go online
@@ -118,12 +156,20 @@ public class MockCardReaderService extends Service {
 
             int value = (int) (transactionAmount % 100);
             index = 0;
+
             // based on amount entered, get the respective scheme
             Log.i(TAG, "Transaction Amount entered" + Long.toString(cardReaderRequest.getAmount()));
             Log.i(TAG, "Minor decimal part of the transaction amount value" + Integer.toString(value));
 
-            // get response data for a particular card brand based on the entered value
-            mockResponseData = mockCardreaderHelper.getMockResponseData(value);
+            // DO-6472 Playback a specific card type
+            String cardType = getPlaybackCardType();
+            if (!("NONE".equals(cardType))) {
+                // get response data for a particular card brand based on the entered value
+                mockResponseData = mockCardreaderHelper.findMockResponseData(cardType);
+            } else {
+               // value = getValueBasedOnInterface(cardReaderRequest.getCardInterfaceTypes(), value);
+                mockResponseData = mockCardreaderHelper.getMockResponseData(value);
+            }
 
             // get all the response packets
             responseDataList = mockResponseData.getResponseData();
@@ -170,18 +216,6 @@ public class MockCardReaderService extends Service {
             } else {
                 Log.e(TAG, "Something went wrong in startTransaction");
             }
-
-            /*
-            for (MockResponseData data : mockResponseDataList) {
-                Log.d("MockCardreaderService", "data scheme" + data.getScheme());
-
-                Log.d("MockCardreaderService", "data " + data.getResponseData());
-
-                for (MockResponseData.ResponseData responseData : data.getResponseData()) {
-                    Log.d("MockCardreaderService", "status " + responseData.getStatus());
-                    Log.d("MockCardreaderService", "packet " + responseData.getPacket());
-                }
-            }*/
         }
 
         private void returnResponse(CardReaderResponse.Status status, byte[] data,
@@ -242,6 +276,9 @@ public class MockCardReaderService extends Service {
                 Log.d(TAG, "Timed out waiting for card!");
                 iPoyntPaymentSPIListener.onCardEntryTimeoout();
             } else if (STOP_AFTER_READ_RECORDS.equals(data.getStatus())) {
+                // Replace mock transaction amount with the amount entered, Fix for DO-6444
+                transactionAmount = cardReaderRequest.getAmount();
+                data = replaceMockAmount(data);
                 CardReaderResponseBuilder cardReaderResponseBuilder = new CardReaderResponseBuilder();
                 cardReaderResponseBuilder.process(CardReaderResponse.Status.STOP_AFTER_READ_RECORDS,
                                                   ByteUtils.hexStringToByteArray(data.getPacket()));
@@ -249,7 +286,8 @@ public class MockCardReaderService extends Service {
                 Log.i(TAG, "Calling onCheckCard in continueTransaction");
                 iPoyntPaymentSPIListener.onCheckCard(cardReaderResponse);
             } else if (ONLINE_AUTHZ_REQ.equals(data.getStatus())) {
-                // Replace mock transaction amount with the amount entered
+                // Replace mock transaction amount with the amount entered, Fix for DO-6444
+                transactionAmount = cardReaderRequest.getAmount();
                 data = replaceMockAmount(data);
                 Log.i(TAG, "Updated packet with transaction amount entered :" + data.getPacket());
 
@@ -261,7 +299,8 @@ public class MockCardReaderService extends Service {
                 Log.i(TAG, "Calling online Auth required");
                 iPoyntPaymentSPIListener.onOnlineAuthorizationRequired(cardReaderResponse);
             } else if (SUCCESS.equals(data.getStatus())) {
-                // Replace mock transaction amount with the amount entered
+                // Replace mock transaction amount with the amount entered, Fix for DO-6444
+                transactionAmount = cardReaderRequest.getAmount();
                 data = replaceMockAmount(data);
                 Log.i(TAG, "Updated packet with transaction amount entered :" + data.getPacket());
 
@@ -415,4 +454,78 @@ public class MockCardReaderService extends Service {
 
         return responseData;
     }
+
+    String getStringFromFile(File file) {
+        String result = null;
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            try {
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
+
+                while (line != null) {
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
+                    line = br.readLine();
+                }
+                result = sb.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                br.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private boolean checkDisablePlaybackForCurrentTransaction() {
+        return mPrefs.getBoolean(DISABLE_PLAYBACK_FOR_CURRENT_TXN, false);
+    }
+
+    private void resetDisablePlaybackForCurrentTransaction() {
+        SharedPreferences.Editor editPrefs = mPrefs.edit();
+        editPrefs.putBoolean(DISABLE_PLAYBACK_FOR_CURRENT_TXN, false);
+        editPrefs.putBoolean(ENABLE_PLAYBACK, true);
+        editPrefs.commit();
+    }
+
+    private boolean checkPlaybackEnabled() {
+        // check ENABLE_PLAYBACK shared pref
+        return mPrefs.getBoolean(ENABLE_PLAYBACK, true);
+    }
+
+    private String getPlaybackCardType() {
+        // get PLAYBACK_CARD_TYPE shared pref to play back data for a specific card
+        return mPrefs.getString(PLAYBACK_CARD_TYPE, "NONE");
+    }
+
+    private int getValueBasedOnInterface(List<CardInterfaceType> types, int value) {
+        int updatedValue = value;
+        byte cardInterface = (byte) 0x00;
+        for (CardInterfaceType cardInterfaceType : types) {
+            switch (cardInterfaceType) {
+                case MSR:
+                    cardInterface = (byte) (cardInterface | 0x01);
+                    break;
+                case CT:
+                    cardInterface = (byte) (cardInterface | 0x04);
+                    break;
+                case CL:
+                    cardInterface = (byte) (cardInterface | 0x02);
+                    break;
+            }
+        }
+
+        if (cardInterface == 0x01) {
+            updatedValue = MockCardreaderHelper.getValueFromCardScheme("VISA_MAGSTRIPE");
+        } else if (cardInterface == 0x04) {
+            updatedValue = MockCardreaderHelper.getValueFromCardScheme("VISA_CONTACT");
+        }
+
+        return updatedValue;
+    }
+
 }
