@@ -7,24 +7,30 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 import co.poynt.os.model.DukptData;
+import co.poynt.os.services.v1.IPoyntBancomantTrustedCertsSummaryListener;
 import co.poynt.os.services.v1.IPoyntDataEncryptionListener;
 import co.poynt.os.services.v1.IPoyntDeleteAcquirerConfigKeysListener;
 import co.poynt.os.services.v1.IPoyntKeyIndicesValidationListener;
 import co.poynt.os.services.v1.IPoyntKeyUpdateListener;
 import co.poynt.os.services.v1.IPoyntMutualAuthenticationListener;
 import co.poynt.os.services.v1.IPoyntMutualAuthenticationVerificationListener;
+import co.poynt.os.services.v1.IPoyntSaveDataForFinancialServiceMsgListener;
 import co.poynt.os.services.v1.IPoyntSelectMessageProcessingKeyListener;
 import co.poynt.os.services.v1.IPoyntServiceFinMessageDecryptionListener;
 import co.poynt.os.services.v1.IPoyntServiceFinMessageEncryptionListener;
 import co.poynt.os.services.v1.IPoyntServiceMessageDecryptionListener;
 import co.poynt.os.services.v1.IPoyntServiceMessageEncryptionListener;
+import co.poynt.vendor.services.v1.IPoyntCardHashStatusListener;
 import co.poynt.vendor.services.v1.IPoyntDeviceCertificateListener;
 import co.poynt.vendor.services.v1.IPoyntDeviceCertificateUpdateListener;
 import co.poynt.vendor.services.v1.IPoyntDeviceCertificatesSummaryListener;
+import co.poynt.vendor.services.v1.IPoyntPCIKeyNamesListener;
+import co.poynt.vendor.services.v1.IPoyntPCIKeyStatusListener;
 import co.poynt.vendor.services.v1.IPoyntPaymentSecuritySPI;
 import co.poynt.vendor.services.v1.IPoyntRemoteKeyLoadListener;
 import co.poynt.vendor.services.v1.IPoyntRemoteKeyRequestListener;
 import co.poynt.vendor.services.v1.IPoyntRemoteKeyValidationRequestListener;
+import co.poynt.vendor.services.v1.IPoyntSecurityEventLogsListener;
 
 public class SecuritySPIService extends Service {
     public SecuritySPIService() {
@@ -171,7 +177,7 @@ public class SecuritySPIService extends Service {
         }
 
         @Override
-        public void loadDeviceKeyResponse(int i, String s, String s1, String s2, long l, IPoyntRemoteKeyLoadListener iPoyntRemoteKeyLoadListener) throws RemoteException {
+        public void loadDeviceKeyResponse(int i, String s, String s1, String s2, String s3, long l, IPoyntRemoteKeyLoadListener iPoyntRemoteKeyLoadListener) throws RemoteException {
 
         }
 
@@ -182,6 +188,51 @@ public class SecuritySPIService extends Service {
 
         @Override
         public void validateDeviceKeyValidationResponse(boolean b, String s, String s1, String s2, long l, IPoyntRemoteKeyLoadListener iPoyntRemoteKeyLoadListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void getPCIKeyStatus(IPoyntPCIKeyStatusListener iPoyntPCIKeyStatusListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void getPCIKeyNames(IPoyntPCIKeyNamesListener iPoyntPCIKeyNamesListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void loadCardHashSalt(String s, IPoyntCardHashStatusListener iPoyntCardHashStatusListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void getCardHashSaltLoadedStatus(IPoyntCardHashStatusListener iPoyntCardHashStatusListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void saveDataForFinancialServiceMessage(Bundle bundle, IPoyntSaveDataForFinancialServiceMsgListener iPoyntSaveDataForFinancialServiceMsgListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void eraseAllKeysV2(Bundle bundle, IPoyntKeyUpdateListener iPoyntKeyUpdateListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void getBancomatTrustedCerts(IPoyntBancomantTrustedCertsSummaryListener iPoyntBancomantTrustedCertsSummaryListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void removeBancomatTrustedCerts(IPoyntBancomantTrustedCertsSummaryListener iPoyntBancomantTrustedCertsSummaryListener) throws RemoteException {
+
+        }
+
+        @Override
+        public void getSecurityEventLogs(Bundle bundle, IPoyntSecurityEventLogsListener iPoyntSecurityEventLogsListener) throws RemoteException {
 
         }
     };

@@ -1,3 +1,73 @@
 <resources>
     <string name="app_name">SampleSPIService</string>
+    <!-- Strings for diagnostics -->
+    <string name="diagnostics_title_card_reader_connection">Card reader connection</string>
+    <string name="diagnostics_card_reader_not_connected">Card reader not connected</string>
+    <string name="diagnostics_card_reader_connected">Card reader connected</string>
+    <string name="card_reader_certs_label">card reader certificates</string>
+    <string name="diagnostics_certs_start">Checking certificates</string>
+    <string name="diagnostics_certs_success_prod_dki_rki">Supports Production Remote and Direct Key Injection</string>
+    <string name="diagnostics_certs_success_prod_dki">Support Production Direct Key Injection only</string>
+    <string name="diagnostics_certs_warning_test_dki_rki">Supports Test Remote and Direct Key Injection</string>
+    <string name="diagnostics_certs_warning_test_dki">Supports Test Direct Key Injection Capable only</string>
+    <string name="diagnostics_certs_fail">Invalid certificate status</string>
+    <string name="diagnostics_title_card_reader_security">Card reader security</string>
+    <string name="diagnostics_card_reader_security_tamper_detected">Tamper detected</string>
+    <string name="diagnostics_card_reader_security_could_not_get_24hr_check_status">Could not get 24hr check status</string>
+    <string name="diagnostics_card_reader_security_24hr_check_failed">24hr check failed</string>
+    <string name="diagnostics_card_reader_security_no_tamper">No tamper detected</string>
+    <string name="diagnostics_card_reader_security_could_not_get_tamper_status">Could not get tamper status</string>
+    <string name="diagnostics_card_reader_security_could_not_pci_security_status">Could not get PCI security status</string>
+    <string name="diagnostics_card_reader_security_pci_security_enabled">PCI security not enabled</string>
+    <string name="diagnostics_card_reader_security_pci_security_not_enabled">PCI security not enabled</string>
+
+    <string name="diagnostics_key_names">KEYS SUMMARY</string>
+    <string name="diagnostics_could_not_get_key_status">Could not get card reader key status</string>
+    <string name="diagnostics_key_status_good">Keys are injected</string>
+    <string name="diagnostics_key_status_bad">Keys are not injected</string>
+    <string name="diagnostics_title_card_reader_keys">Card reader keys</string>
+    <string name="diagnostics_websocket_warning">Cloud messaging not connected.</string>
+    <string name="diagnostics_websocket_good">Cloud messaging connected.</string>
+    <string name="diagnostics_network_unavailable">Network unavailable.</string>
+    <string name="diagnostics_buzzer_start">Buzzer sounding</string>
+    <string name="diagnostics_rtc_start">RTC check starts</string>
+    <string name="diagnostics_buzzer_good">Buzzer sounded</string>
+    <string name="diagnostics_msr_start">Please swipe card</string>
+    <string name="diagnostics_msr_good">"Mag swipe successful</string>
+    <string name="diagnostics_emv_start">Please insert chip card</string>
+    <string name="diagnostics_emv_good">Smart card success</string>
+    <string name="diagnostics_emv_bad">Smart card failed</string>
+    <string name="diagnostics_contactless_start">Please place contactless card near second screen</string>
+    <string name="diagnostics_contactless_start_p5">Please place contactless card near screen</string>
+    <string name="diagnostics_contactless_good">Contactless detected</string>
+    <string name="diagnostics_contactless_bad">Contactless failed</string>
+    <string name="diagnostics_obj_sign_start">Getting certs</string>
+    <string name="diagnostics_obj_sign_good">Device is object signed</string>
+    <string name="diagnostics_obj_sign_bad">Device is not object signed</string>
+
+    <string name="card_reader_injection_label">Direct Key Injection summary</string>
+    <string name="diagnostics_injection_start">Checking injection summary</string>
+    <string name="diagnostics_injection_success">Injection summary available</string>
+    <string name="diagnostics_injection_warning">No injection summary</string>
+    <string name="diagnostics_injection_fail">Failed to get injection summary</string>
+    <string name="diagnostics_injection_partial">Partial key injection</string>
+    <string name="buzzer_test_label">Buzzer</string>
+    <string name="rtc_test_label">card reader time</string>
+
+    <string name="magstripe_test_label">Magstripe swipe test</string>
+    <string name="object_signing_test_label">Object Signing</string>
+    <string name="contactless_test_label">Contactless test</string>
+    <string name="emv_test_label">EMV test</string>
+    <string name="diagnostic_step_timed_out">Timed out after 10s</string>
+    <string name="firmware_version">Firmware Version: </string>
+    <string name="device_tampered">"Device Tampered: %1s </string>
+    <string name="device_24checkFailed">"Device 24hr check failed: %1s </string>
+    <string name="pci_enabled">"PCI Enabled: %1s </string>
+    <string name="object_signed">"Object Signed: %1s </string>
+    <string name="rki_capable">"Remote key Injectin: %1s </string>
+    <string name="key_tspk_found">Trusted source public key: %1s </string>
+    <string name="keys_lost">KEYS LOST</string>
+    <string name="found">found</string>
+    <string name="not_found">not found</string>
+    <string name="firmeware_ts">"Firmware time stamp:%1s </string>
 </resources>

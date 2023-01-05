@@ -151,5 +151,50 @@ public class PaymentSPIService extends Service {
         public void collectManualEntryData(Bundle bundle, IPoyntPaymentSPIListener iPoyntPaymentSPIListener) throws RemoteException {
 
         }
+
+        @Override
+        public boolean playBuzzer() throws RemoteException {
+            return false;
+        }
+
+        @Override
+        public boolean setAPDUMode(int i) throws RemoteException {
+            return false;
+        }
+
+        @Override
+        public boolean setAPDUPlaybackValidationType(int i) throws RemoteException {
+            return false;
+        }
+
+        @Override
+        public int getAPDUMode() throws RemoteException {
+            return 0;
+        }
+
+        @Override
+        public int getPlaybackValidationType() throws RemoteException {
+            return 0;
+        }
+
+        @Override
+        public boolean setAPDUData(String s) throws RemoteException {
+            return false;
+        }
+
+        @Override
+        public String exportAPDUData() throws RemoteException {
+            return null;
+        }
+
+        @Override
+        public boolean setAPDUParams(Bundle bundle) throws RemoteException {
+            return false;
+        }
+
+        @Override
+        public boolean setAutoPin(String s) throws RemoteException {
+            return false;
+        }
     };
 }
