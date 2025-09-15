@@ -1,0 +1,11 @@
+<accessories>
+    <appid>urn:aid:d3462a56-737b-4419-b54c-39a59f46789g</appid>
+
+    <accessory
+        category="Printer"
+        model-name="BuiltIn printer"
+        connected="true"
+        service_class="com.sample.printer.BuiltinPrinterService"
+        version="1.0">
+    </accessory>
+</accessories>

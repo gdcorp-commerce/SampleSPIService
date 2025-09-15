@@ -22,7 +22,6 @@ import co.poynt.os.model.PoyntKeyInfo;
 import co.poynt.os.model.PoyntKeyType;
 import com.poynt.diagnostics.IDiagnosticsServiceRunner;
 
-import com.poynt.diagnostics.IDiagnosticsProviderService;
 public class SampleDiagnosticsService extends Service {
 
     private static final String TAG = "SampleDiagnostics";

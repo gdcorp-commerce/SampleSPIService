@@ -235,5 +235,10 @@ public class SecuritySPIService extends Service {
         public void getSecurityEventLogs(Bundle bundle, IPoyntSecurityEventLogsListener iPoyntSecurityEventLogsListener) throws RemoteException {
 
         }
+
+        @Override
+        public void deleteCardHashSalt(IPoyntCardHashStatusListener iPoyntCardHashStatusListener) throws RemoteException {
+
+        }
     };
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sample.spi">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="com.poynt.diagnostics.DIAGNOSTICS_PROVIDER" />
 
@@ -68,6 +67,15 @@
                 <action android:name="poynt.intent.action.DELETE_AID_CONFIG_WITH_MATCHING_TLV" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name="com.sample.printer.BuiltinPrinterService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="co.poynt.os.services.v1.IPoyntPrinterService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
