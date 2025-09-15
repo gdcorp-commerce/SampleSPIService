@@ -106,51 +106,62 @@ public class BuiltinPrinterService extends Service {
     }
 
     /**
-     * Listener handling breakdown for common printer statuses. Map your OEM SDK result codes here.
-     * This is only guidance — replace the comments with actual listener method calls provided by Poynt.
+     * Listener handling breakdown for common printer statuses.
+     * Map your OEM SDK result codes to ONLY the supported Poynt statuses below.
      *
-     * Expected mappings (examples):
-     * - OUT_OF_PAPER:      Notify listener with an "out of paper" error/status
-     * - COVER_OPEN:        Notify listener with a "cover open" error/status
-     * - PAPER_JAM:         Notify listener with a "paper jam" error/status
-     * - OVERHEAT:          Notify listener with an "overheated" warning/error
-     * - LOW_BATTERY:       Notify listener with a "low battery" warning/error
-     * - SUCCESS:           Notify listener that printing completed successfully
-     * - UNKNOWN_ERROR:     Notify listener with a generic failure
+     * Supported PrinterStatus.Code values:
+     * - PRINTER_CONNECTED
+     * - PRINTER_DISCONNECTED
+     * - PRINTER_UNAVAILABLE
+     * - PRINTER_JOB_PRINTED
+     * - PRINTER_JOB_FAILED
+     * - PRINTER_JOB_QUEUED
+     * - PRINTER_ERROR_OUT_OF_PAPER
+     * - PRINTER_ERROR_OTHER
+     * - PRINTER_ERROR_IMAGE_OFFDOCK
      */
     private void handlePrintResultWithListener(IPoyntPrinterServiceListener listener,
                                                String jobId,
                                                int oemCode,
                                                String oemMessage) {
-        // Define and map your OEM codes here (replace with your actual codes)
+        // Guidance only — replace with your OEM-to-Poynt mapping.
+        // Example OEM codes (replace with your actual ones):
         // final int OEM_SUCCESS = 0;
         // final int OEM_OUT_OF_PAPER = 10;
-        // final int OEM_COVER_OPEN = 11;  // aka empty/open cover
-        // final int OEM_PAPER_JAM = 12;
-        // final int OEM_OVERHEAT = 13;
-        // final int OEM_LOW_BATTERY = 14;
-
+        // final int OEM_IMAGE_OFFDOCK = 11;
+        // final int OEM_QUEUED = 20;
+        // final int OEM_UNAVAILABLE = 30;
+        // final int OEM_DISCONNECTED = 31;
+        // final int OEM_CONNECTED = 32;
+        // final int OEM_GENERIC_FAILURE = 99;
+        //
+        // Example mapping (pseudo-code):
         // switch (oemCode) {
         //     case OEM_SUCCESS:
-        //         // Example: listener.onPrintJobCompleted(jobId);
+        //         // listener.onPrintJobCompleted(jobId);
+        //         // OR: listener.onPrinterStatusChanged(jobId, new PrinterStatus(PrinterStatus.Code.PRINTER_JOB_PRINTED, oemMessage));
         //         return;
         //     case OEM_OUT_OF_PAPER:
-        //         // Example: listener.onPrinterStatusChanged(jobId, PrinterStatus.PRINTER_ERROR_OUT_OF_PAPER, oemMessage);
+        //         // listener.onPrinterStatusChanged(jobId, new PrinterStatus(PrinterStatus.Code.PRINTER_ERROR_OUT_OF_PAPER, oemMessage));
         //         return;
-        //     case OEM_COVER_OPEN:
-        //         // Example: listener.onPrinterStatusChanged(jobId, PrinterStatus.PRINTER_ERROR_COVER_OPEN, oemMessage);
+        //     case OEM_IMAGE_OFFDOCK:
+        //         // listener.onPrinterStatusChanged(jobId, new PrinterStatus(PrinterStatus.Code.PRINTER_ERROR_IMAGE_OFFDOCK, oemMessage));
         //         return;
-        //     case OEM_PAPER_JAM:
-        //         // Example: listener.onPrinterStatusChanged(jobId, PrinterStatus.PRINTER_ERROR_PAPER_JAM, oemMessage);
+        //     case OEM_QUEUED:
+        //         // listener.onPrinterStatusChanged(jobId, new PrinterStatus(PrinterStatus.Code.PRINTER_JOB_QUEUED, oemMessage));
         //         return;
-        //     case OEM_OVERHEAT:
-        //         // Example: listener.onPrinterStatusChanged(jobId, PrinterStatus.PRINTER_WARNING_OVERHEAT, oemMessage);
+        //     case OEM_UNAVAILABLE:
+        //         // listener.onPrinterStatusChanged(jobId, new PrinterStatus(PrinterStatus.Code.PRINTER_UNAVAILABLE, oemMessage));
         //         return;
-        //     case OEM_LOW_BATTERY:
-        //         // Example: listener.onPrinterStatusChanged(jobId, PrinterStatus.PRINTER_WARNING_LOW_BATTERY, oemMessage);
+        //     case OEM_DISCONNECTED:
+        //         // listener.onPrinterStatusChanged(jobId, new PrinterStatus(PrinterStatus.Code.PRINTER_DISCONNECTED, oemMessage));
+        //         return;
+        //     case OEM_CONNECTED:
+        //         // listener.onPrinterStatusChanged(jobId, new PrinterStatus(PrinterStatus.Code.PRINTER_CONNECTED, oemMessage));
         //         return;
         //     default:
-        //         // Example: listener.onPrintJobFailed(jobId, oemCode, (oemMessage != null ? oemMessage : "Unknown error"));
+        //         // listener.onPrintJobFailed(jobId, oemCode, (oemMessage != null ? oemMessage : "Printer error"));
+        //         // OR: listener.onPrinterStatusChanged(jobId, new PrinterStatus(PrinterStatus.Code.PRINTER_ERROR_OTHER, oemMessage));
         // }
     }
 
