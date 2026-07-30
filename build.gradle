@@ -1,9 +1,14 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
-        google()
-        jcenter()
-    }
+        maven {
+            url = System.getenv('JF_URL') ? "${System.getenv('JF_URL')}/artifactory/java-virt" : 'https://gdartifactory1.jfrog.io/artifactory/java-virt'
+            credentials {
+                username = System.getenv('ARTIFACTORY_USERNAME') ?: ''
+                password = System.getenv('ARTIFACTORY_PASSWORD') ?: ''
+            }
+        }
+}
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.1"
 
@@ -14,15 +19,20 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
-        jcenter()
+        maven {
+            url = System.getenv('JF_URL') ? "${System.getenv('JF_URL')}/artifactory/java-virt" : 'https://gdartifactory1.jfrog.io/artifactory/java-virt'
+            credentials {
+                username = System.getenv('ARTIFACTORY_USERNAME') ?: ''
+                password = System.getenv('ARTIFACTORY_PASSWORD') ?: ''
+            }
+        }
         maven {
             url 'https://nexus.poynt.com/content/repositories/releases'
         }
         maven {
             url 'https://nexus.poynt.com/content/repositories/snapshots'
         }
-    }
+}
 }
 
 task clean(type: Delete) {
