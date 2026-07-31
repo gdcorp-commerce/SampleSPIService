@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace "com.sample.spi"
     compileSdkVersion 30
     buildToolsVersion "30.0.0"
 
     defaultConfig {
         applicationId "com.sample.spi"
         minSdkVersion 22
-        targetSdkVersion 30
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
 
@@ -18,6 +19,18 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures {
+        aidl true
+    }
+
+    sourceSets {
+        main {
+            aidl {
+                srcDir 'src/main/aidl'
+            }
         }
     }
 }

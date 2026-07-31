@@ -3,7 +3,6 @@ package com.sample.diagnostics;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -11,8 +10,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.poynt.diagnostics.IDiagnosticsProviderService;
-import com.poynt.diagnostics.IDiagnosticsServiceRunner;
 import com.sample.spi.R;
 
 import java.util.ArrayList;
@@ -23,7 +20,9 @@ import java.util.List;
 
 import co.poynt.os.model.PoyntKeyInfo;
 import co.poynt.os.model.PoyntKeyType;
+import com.poynt.diagnostics.IDiagnosticsServiceRunner;
 
+import com.poynt.diagnostics.IDiagnosticsProviderService;
 public class SampleDiagnosticsService extends Service {
 
     private static final String TAG = "SampleDiagnostics";
