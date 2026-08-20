@@ -1,8 +1,27 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
-        google()
-        mavenCentral() // Replace jcenter() which is deprecated
+        maven {
+            url = 'https://gdartifactory1.jfrog.io/artifactory/gradle-gdcorp-commerce-snapshots-local'
+            credentials {
+                username = System.getenv('ARTIFACTORY_WRITE_USERNAME') ?: ''
+                password = System.getenv('ARTIFACTORY_WRITE_PASSWORD') ?: ''
+            }
+        }
+        maven {
+            url = 'https://gdartifactory1.jfrog.io/artifactory/gradle-gdcorp-commerce-releases-local'
+            credentials {
+                username = System.getenv('ARTIFACTORY_WRITE_USERNAME') ?: ''
+                password = System.getenv('ARTIFACTORY_WRITE_PASSWORD') ?: ''
+            }
+        }
+        maven {
+            url = 'https://gdartifactory1.jfrog.io/artifactory/java-virt'
+            credentials {
+                username = System.getenv('ARTIFACTORY_USERNAME') ?: ''
+                password = System.getenv('ARTIFACTORY_PASSWORD') ?: ''
+            }
+        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:8.7.0"
@@ -14,13 +33,26 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
-        mavenCentral() // Replace jcenter() which is deprecated
         maven {
-            url 'https://nexus.poynt.com/content/repositories/releases'
+            url = 'https://gdartifactory1.jfrog.io/artifactory/gradle-gdcorp-commerce-snapshots-local'
+            credentials {
+                username = System.getenv('ARTIFACTORY_WRITE_USERNAME') ?: ''
+                password = System.getenv('ARTIFACTORY_WRITE_PASSWORD') ?: ''
+            }
         }
         maven {
-            url 'https://nexus.poynt.com/content/repositories/snapshots'
+            url = 'https://gdartifactory1.jfrog.io/artifactory/gradle-gdcorp-commerce-releases-local'
+            credentials {
+                username = System.getenv('ARTIFACTORY_WRITE_USERNAME') ?: ''
+                password = System.getenv('ARTIFACTORY_WRITE_PASSWORD') ?: ''
+            }
+        }
+        maven {
+            url = 'https://gdartifactory1.jfrog.io/artifactory/java-virt'
+            credentials {
+                username = System.getenv('ARTIFACTORY_USERNAME') ?: ''
+                password = System.getenv('ARTIFACTORY_PASSWORD') ?: ''
+            }
         }
     }
 }
