@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 .idea
+
+# Devcontainer: Claude session state per config (contains OAuth tokens)
+.devcontainer/.agent-state/
+# Devcontainer: atlas-container CLI local runtime state (resolved host ports, etc.)
+.devcontainer/.atlas-container/
